@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+		content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover">
+	<title>My LIFF App</title>
+	<style>
+		button {
+			width: 50%;
+			height: 10%;
+			padding: 16px 0;
+			margin: auto 0;
+		}
+	</style>
+</head>
+<body>
+	<button id="btnShare" onclick="sendShare_Gift()" style="margin: 20px auto;padding: 20px;">Gift</button>
+	<button id="btnLogin" onclick="liff.login()" style="margin: 20px auto;padding: 20px;">Log In</button>
+	<button id="btnLogOut" onclick="logOut()" style="margin: 20px auto;padding: 20px;">Log Out</button>
+	<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+	<script>
+		async function sendShare_Gift() {
+
+			name = await liff.getProfile().then((profile) => {
+				return profile.displayName;
+			}).catch((err) => {
+				return err;
+			});
+
+			const result = await liff.shareTargetPicker([
+			{
+			"type": "bubble",
+			"size": "hecto",
+			"hero": {
+				"type": "image",
+				"url": "https://i.imgur.com/f55KnYX.png",
+				"size": "full",
+				"aspectRatio": "20:13",
+				"aspectMode": "cover",
+				"action": {
+				"type": "uri",
+				"uri": "https://line.me/"
+				}
+			},
+			"body": {
+				"type": "box",
+				"layout": "horizontal",
+				"contents": [
+				{
+					"type": "image",
+					"url": "https://lcp-prod-obs.line-scdn.net/0hIixhXu-uFkZFEQPBEdlpERRMGjd2YBJOLGkLe2FUGgBsfzplIC4xIyERGwBgfCpPBX8JfxASMykIKQJyEnc4RRQUG3QTYTl1ETwxax9LNAMYfQF1eD8/f300"
+				},
+				{
+					"type": "text",
+					"text": "【星巴克】1688元禮物即享券(分次使用．無效期)",
+					"weight": "bold",
+					"size": "md",
+					"offsetBottom": "none",
+					"offsetStart": "none",
+					"offsetEnd": "none",
+					"offsetTop": "lg",
+					"wrap": true,
+					"align": "end"
+				}
+				]
+			},
+			"footer": {
+				"type": "box",
+				"layout": "vertical",
+				"spacing": "sm",
+				"contents": [
+				{
+					"type": "button",
+					"style": "secondary",
+					"height": "sm",
+					"action": {
+					"type": "uri",
+					"label": "打開我的禮物",
+					"uri": "https://line.me/"
+					}
+				},
+				{
+					"type": "button",
+					"style": "link",
+					"height": "sm",
+					"action": {
+					"type": "uri",
+					"label": "傳送感謝小卡",
+					"uri": "https://line.me/"
+					}
+				},
+				{
+					"type": "separator",
+					"margin": "10px"
+				},
+				{
+					"type": "box",
+					"layout": "baseline",
+					"contents": [
+					{
+						"type": "icon",
+						"url": "https://cdn-1.webcatalog.io/catalog/line-giftshop/line-giftshop-icon-filled-256.webp?v=1754285198712",
+						"size": "20px",
+						"offsetTop": "4px",
+						"offsetEnd": "2px"
+					},
+					{
+						"type": "text",
+						"text": "LINE 禮物",
+						"size": "sm"
+					},
+					{
+						"type": "icon",
+						"url": "https://i.imgur.com/aKbXQ9D.png"
+					}
+					],
+					"margin": "10px"
+				}
+				],
+				"flex": 0
+			}
+			}
+			])
+			if (result) {
+				alert(`[${result.status}] Message sent!`)
+			} else {
+				const [majorVer, minorVer, patchVer] = (liff.getLineVersion() || "").split('.');
+
+				if (minorVer === undefined) {
+					alert('ShareTargetPicker was canceled in external browser')
+					return
+				}
+
+				if (parseInt(majorVer) >= 10 && parseInt(minorVer) >= 10 && parseInt(patchVer) > 0) {
+					alert('ShareTargetPicker was canceled in LINE app')
+				}
+			}
+		}
+		function logOut() {
+			liff.logout()
+			window.location.reload()
+		}
+		async function main() {
+			await liff.init({ liffId: "2009050000-ZGl1KWVU" })
+			if (liff.isLoggedIn()) {
+				document.getElementById("btnShare").style.display = "block"
+				document.getElementById("btnShare2").style.display = "block"
+				document.getElementById("btnShare3").style.display = "block"
+				if (!liff.isInClient()) {
+					document.getElementById("btnLogOut").style.display = "block"
+				}
+			} else {
+				document.getElementById("btnLogin").style.display = "block"
+			}
+		}
+	</script>
+</body>
+</html>
